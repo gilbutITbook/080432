@@ -1,0 +1,479 @@
+2장
+
+---------------------------------------------------------------------
+▼코드 2-1
+---------------------------------------------------------------------
+
+import './App.css'
+
+function App() {
+  return (
+    <div className="App">
+      <h1>React sample.</h1>
+      <p>This is sample application.</p>
+    </div>
+  )
+}
+
+export default App
+
+
+
+---------------------------------------------------------------------
+▼코드 2-2
+---------------------------------------------------------------------
+
+function App() {
+  const msg = "이것은 샘플 메시지입니다."
+  return (
+    <div className="App">
+      <h1>React sample.</h1>
+      <p>This is sample application.</p>
+      <div>{msg}</div>
+    </div>
+  )
+}
+
+
+
+---------------------------------------------------------------------
+▼코드 2-3
+---------------------------------------------------------------------
+
+const root = ReactDOM.createRoot(document.getElementById('root'))
+root.render(
+  <React.StrictMode>
+    <App title="Hello!" message="이것은 속성의 값입니다." />
+  </React.StrictMode>
+)
+
+
+
+---------------------------------------------------------------------
+▼코드 2-4
+---------------------------------------------------------------------
+
+function App(props) {
+  return (
+    <div className="App">
+      <h1>{props.title}</h1>
+      <p>{props.message}</p>
+    </div>
+  )
+}
+
+
+
+---------------------------------------------------------------------
+▼코드 2-5
+---------------------------------------------------------------------
+
+.red {
+  color: red;
+}
+.green {
+  color: green;
+}
+.blue {
+  color: blue;
+}
+
+
+
+---------------------------------------------------------------------
+▼코드 2-6
+---------------------------------------------------------------------
+
+<App color="red" title="Hello!" message="이것은 color=red의 표시입니다." />
+
+
+
+---------------------------------------------------------------------
+▼코드 2-7
+---------------------------------------------------------------------
+
+function App(props) {
+  const msg = "이것은 샘플 메시지입니다."
+  return (
+    <div className="App">
+      <h1 className={props.color}>{props.title}</h1>
+      <p className={props.color}>{props.message}</p>
+    </div>
+  )
+}
+
+
+
+---------------------------------------------------------------------
+▼코드 2-8
+---------------------------------------------------------------------
+
+.clickable {
+  cursor: pointer;
+  font-size: 24px;
+}
+
+
+
+---------------------------------------------------------------------
+▼코드 2-9
+---------------------------------------------------------------------
+
+function App(props) {
+  var counter = 0
+  const doClick = ()=> {
+    counter++
+  }
+  return (
+    <div className="App">
+      <h1 className={props.color}>{props.title}</h1>
+      <p className={props.color,"clickable"} 
+        onClick={doClick}>counter: {counter}.</p>
+    </div>
+  )
+}
+
+
+
+---------------------------------------------------------------------
+▼코드 2-10
+---------------------------------------------------------------------
+
+// import {useState} from 'react' //추가한다 
+
+function App(props) {
+  const [counter, setCounter] = useState(0)
+  const doClick = ()=> {
+    setCounter(counter + 1)
+  }
+  return (
+    <div className="App">
+      <h1 className={props.color}>{props.title}</h1>
+      <p className={props.color,"clickable"} 
+        onClick={doClick}>counter: {counter}.</p>
+    </div>
+  )
+}
+
+
+
+---------------------------------------------------------------------
+▼코드 2-11
+---------------------------------------------------------------------
+
+input {
+  margin:5px;
+  padding: 5px;
+}
+button {
+  margin:5px;
+  padding: 5px 15px;
+}
+
+
+
+---------------------------------------------------------------------
+▼코드 2-12
+---------------------------------------------------------------------
+
+function App(props) {
+  const [input, setInput] = useState("");
+  const [message, setMessage] = useState("이름은?");
+  const doInput = (event)=> {
+    setInput(event.target.value);
+  };
+  const doClick = ()=> {
+    setMessage("안녕하세요, " + input + "님!");
+  };
+  return (
+    <div className="App">
+      <h1 className={props.color}>{props.title}</h1>
+      <p className={props.color, "clickable"}>{message}</p>
+      <div>
+        <input type="text" onChange={doInput} />
+        <button onClick={doClick}>Click</button>
+      </div>
+    </div>
+  );
+}
+
+
+
+---------------------------------------------------------------------
+▼코드 2-13
+---------------------------------------------------------------------
+
+// import {useState, useEffect} from 'react'; // 수정
+
+function App(props) {
+  const [input, setInput] = useState(1);
+  const [message, setMessage] = useState("정수를 입력：");
+
+  const doInput = (event)=> {
+    setInput(event.target.value);
+  };
+
+  useEffect(()=> {
+    var prime = true;
+    if (input == 1) {
+      prime = false;
+    } else {
+      for(var i = 2;i <= input / 2;i++) {
+        if (input % i === 0) {
+          prime = false;
+          break;
+        }
+      }      
+    }
+    setMessage(prime ? "※소수입니다." : "소수가 아닙니다.")
+  }, [input]);
+
+  return (
+    <div className="App">
+      <h1 className={props.color}>{props.title}</h1>
+      <p className={props.color, "clickable"}>{message}</p>
+      <div>
+        <input type="number" min="1" onChange={doInput} />
+      </div>
+    </div>
+  )
+}
+
+
+
+---------------------------------------------------------------------
+▼코드 2-14
+---------------------------------------------------------------------
+
+ul, ol {
+  list-style-type: none;
+  padding:0px;
+}
+li {
+  text-align: left;
+  font-size: 20px;
+  padding:5px;
+  margin:5px 20px;
+  border: solid 2px lightgray;
+  border-radius: 5px;
+}
+
+
+
+---------------------------------------------------------------------
+▼코드 2-15
+---------------------------------------------------------------------
+
+function App(props) {
+  const data = [
+    {name:"Kim", mail:"kim@gilbut"},
+    {name:"Lee", mail:"lee@flower"},
+    {name:"Park", mail:"park@happy"}
+  ];
+
+  return (
+    <div className="App">
+      <h1>{props.title}</h1>
+      <ul>
+      {data.map((item,key)=>{
+        return(<li>{item.name} [{item.mail}]</li>)
+      })}
+      </ul>
+    </div>
+  );
+}
+
+
+
+---------------------------------------------------------------------
+▼코드 2-16
+---------------------------------------------------------------------
+
+.ClassA {
+  font-size: 20px;
+  font-weight: normal;
+  border: solid 2px lightskyblue;
+  padding: 10px;
+  margin: 10px 50px;
+}
+.ClassB {
+  font-size: 20px;
+  font-weight: bold;
+  color:white;
+  background-color: darkblue;
+  padding: 12px;
+  margin: 10px 50px;
+}
+
+
+
+---------------------------------------------------------------------
+▼코드 2-17
+---------------------------------------------------------------------
+
+function App(props) {
+  var [flag,setFlag] = useState(true);
+  
+  const doClick = (event)=> {
+    setFlag(!flag);
+  };
+
+  return (
+    <div className="App">
+      <h1>{props.title}</h1>
+      <p className={flag ? "ClassA" : "ClassB"}>{flag ? "ON" : "OFF"}입니다.</p>
+      <button className="button" onClick={doClick}>
+        Click
+      </button>
+    </div>
+  );
+}
+
+
+
+---------------------------------------------------------------------
+▼코드 2-18
+---------------------------------------------------------------------
+
+function App(props) {
+  var [count, setCount] = useState(0);
+  var [data, setData] = useState([
+    {
+      position:"absolute",
+      left:"0px", top:"0px",
+      width:"100%", height:"100%",
+      backgroundColor:"#fff0",
+    }
+  ]);
+
+  const doClick = (event)=> {
+    const ob = {
+      position:"absolute",
+      left:(event.pageX - 50) + "px", 
+      top:(event.pageY - 50) + "px",
+      width:"100px", 
+      height:"100px",
+      backgroundColor:"#ff000066",
+      borderRadius: "50%"
+    }
+    data.push(ob);
+    setCount(count + 1);
+  };
+
+  return (
+    <div className="App">
+      <h1>{props.title}</h1>
+      <p>{count} objects.</p>
+      <div onClick={doClick}>
+      {data.map((item,key)=>{
+        return(<div style={item} key={key}></div>)
+      })}
+      </div>
+    </div>
+  );
+}
+
+
+
+---------------------------------------------------------------------
+▼코드 2-19
+---------------------------------------------------------------------
+
+import './App.css'
+
+function Message(props) {
+  return (
+    <p className="ClassA">{props.message}</p>
+  );
+}
+
+function Data(props) {
+  return (
+    <ul>
+      {props.data.map((item,key)=>{
+        return(<li key={key}>{item.name}</li>)
+      })}
+      </ul>
+  );
+}
+
+function App(props) {
+  const data = [
+    {name:"Kim"},
+    {name:"Lee"},
+    {name:"Park"},
+  ];
+
+  return (
+    <div className="App">
+      <h1 className="ClassB">{props.title}</h1>
+      <Message message="This is sample message!"/>
+      <Data data={data}/>
+    </div>
+  );
+}
+
+export default App
+
+
+
+---------------------------------------------------------------------
+▼코드 2-20
+---------------------------------------------------------------------
+
+import './App.css';
+import {useState} from 'react';
+
+var data = {
+  data: [
+    {name:"Kim"},
+    {name:"Lee"},
+    {name:"Park"}
+  ],
+  message: "Hello",
+};
+
+function Message() {
+  return (
+    <p className="ClassA">{data.message}</p>
+  );
+}
+
+function Data() {
+  return (
+    <ul>
+      {data.data.map((item,key)=>{
+        return(<li key={key}>{item.name}</li>)
+      })}
+      </ul>
+  );
+}
+
+function App(props) {
+  var [input, setInput] = useState("");
+
+  const doChange = (event)=> {
+    setInput(event.target.value);
+  };
+  const doClick = ()=> {
+    data.data.push({name:input});
+    data.message = "you typed: \"" + input + "\".";
+    setInput("");
+  };
+
+  return (
+    <div className="App">
+      <h1 className="ClassB">{props.title}</h1>
+      <Message />
+      <div>
+        <input onChange={doChange} value={input}/>
+        <button onClick={doClick}>Click</button>
+        </div>
+      <Data />
+    </div>
+  );
+}
+
+export default App;
+
+

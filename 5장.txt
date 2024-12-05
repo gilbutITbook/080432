@@ -1,0 +1,391 @@
+5장
+
+---------------------------------------------------------------------
+▼코드 5-1
+---------------------------------------------------------------------
+
+export default function App({ Component, pageProps }: AppProps) {
+  console.log(pageProps);
+  return <Component {...pageProps} />;
+}
+
+
+
+---------------------------------------------------------------------
+▼코드 5-2
+---------------------------------------------------------------------
+
+import { Inter } from 'next/font/google';
+
+const inter = Inter({ subsets: ['latin'] });
+
+export default function Home() {
+  return (
+    <main>
+      <h1 className="header">Static page</h1>
+      <p>정적인 페이지입니다. 빌드 시에 렌더링됩니다.</p>
+    </main>
+  );
+}
+
+
+
+---------------------------------------------------------------------
+▼코드 5-3
+---------------------------------------------------------------------
+
+import { Inter } from 'next/font/google';
+import Link from 'next/link';
+
+const inter = Inter({ subsets: ['latin'] });
+
+export default function Other({ data }) {
+  return (
+    <main>
+      <h1 className="header">{data.title}</h1>
+      <p>{data.msg}</p>
+      <div><Link href="/">Go Back!!</Link></div>
+    </main>
+  );
+}
+
+export function getStaticProps({ params }) {
+  const data = {
+    title: 'Other page',
+    msg: '정적 프로퍼티 예제입니다.'
+  };
+
+  return {
+    props: {
+      data: data
+    }
+  };
+}
+
+
+
+---------------------------------------------------------------------
+▼코드 5-4
+---------------------------------------------------------------------
+
+import { Inter } from 'next/font/google';
+import Link from 'next/link';
+import { useRouter } from 'next/router';
+
+const inter = Inter({ subsets: ['latin'] });
+ 
+export default function Name({ data }) {
+  const router = useRouter();
+  return (
+    <main>
+      <h1 className="header">{data.title}</h1>
+      <p>name: {router.query.name}</p>
+      <p>message: {data.msg}</p>
+      <div><Link href="/">Go Back!!</Link></div>
+    </main>
+  );
+}
+
+export function getStaticPaths() {
+  const path = [
+    '/name/kim',
+    '/name/lee',
+    '/name/park'
+  ];
+  return {
+    paths:path,
+    fallback: false
+  };
+}
+
+export function getStaticProps({ params }) {
+  const data = {
+    kim:{
+      title:'KIM-web',
+      msg:"This is Kim's web site."
+    },
+    lee:{
+      title:'Lee의 방',
+      msg:'여기는 Lee의 방입니다.'
+    },
+    park:{
+      title:'Park의 페이지',
+      msg:'안녕! Park의 페이지입니다!'
+    }
+  };
+
+  return {
+    props: {
+      data:data[params.name]
+    }
+  };
+}
+
+
+
+---------------------------------------------------------------------
+▼코드 5-5
+---------------------------------------------------------------------
+
+export function getServerSideProps({ params }) {
+  const data = {
+    taro:{
+      title:'Kim-web',
+      msg:"This is Kim's web site."
+    },
+    lee:{
+      title:'Lee의 방',
+      msg:'여기는 Lee의 방입니다.'
+    },
+    park:{
+      title:'Park의 페이지',
+      msg:'안녕! Park의 페이지입니다!'
+    }
+  };
+
+  if (data[params.name]) {
+    return {
+      props: {
+        data:data[params.name]
+      }
+    };
+  } else {
+    return {
+      props: {
+        data:{title:"No data", msg:"데이터가 없습니다."}
+      }    
+    };
+  }
+}
+
+
+
+---------------------------------------------------------------------
+▼코드 5-6
+---------------------------------------------------------------------
+
+import { Inter } from 'next/font/google';
+import Link from 'next/link';
+import { useRouter } from 'next/router';
+
+const inter = Inter({ subsets: ['latin'] });
+ 
+export default function Name({ data }) {
+  console.log("start component.");
+  const router = useRouter();
+  return (
+    <main>
+      <h1 className="header">{data.title}</h1>
+      <p>name: {router.query.name}</p>
+      <p>message: {data.msg}</p>
+      <div><Link href="/">Go Back!!</Link></div>
+    </main>
+  );
+}
+
+var data = {
+  kim:{
+    title:'Kim-web',
+    msg:"This is Kim's web site."
+  },
+    lee:{
+      title:'Lee의 방',
+      msg:'여기는 Lee의 방입니다.'
+    },
+    park:{
+      title:'Park의 페이지',
+      msg:'안녕! Park의 페이지입니다!'
+    }
+};
+
+export function getStaticPaths() {
+  const path = [
+    '/name/kim',
+    '/name/lee',
+    '/name/park'
+  ];
+  return {
+    paths:path,
+    fallback: false
+  };
+}
+
+export function getStaticProps({ params }) {
+  console.log("getStaticProps");
+  return {
+    props: {
+      data:data[params.name]
+    },
+    revalidate: 15
+  };
+}
+
+setInterval(() => {
+  const d = new Date().toISOString();
+  data = {
+    kim:{
+      title:'김철수',
+      msg:'김철수입니다.（' + d + '）'
+    },
+    lee:{
+      title:'이영희~',
+      msg:'이영희예요~~. （' + d + '）'
+    },
+    park:{
+      title:'박지영',
+      msg:'박지영입니다~❤ （' + d + '）'
+    }
+  }
+  console.log("setInterval");
+}, 5000);
+
+
+
+---------------------------------------------------------------------
+▼코드 5-7
+---------------------------------------------------------------------
+
+h1.title {
+  @apply text-2xl font-bold m-0 p-5 text-white bg-blue-800 text-center;
+}
+p.msg {
+  @apply text-lg m-5 text-gray-900;
+}
+
+
+
+---------------------------------------------------------------------
+▼코드 5-8
+---------------------------------------------------------------------
+
+"use server";
+import { Metadata } from 'next';
+
+export async function generateMetadata(){
+  return {
+    title: 'Index page',
+  };
+}
+
+const defaultProps = {
+  title:"Static page",
+  msg:"This is static page sample."
+};
+
+export default async function Home() {
+  return (
+    <main>
+      <h1 className="title">{defaultProps.title}</h1>
+      <p className="msg">{defaultProps.msg}</p>
+    </main>
+  );
+}
+
+
+
+---------------------------------------------------------------------
+▼코드 5-9
+---------------------------------------------------------------------
+
+"use server";
+
+const paths = [
+  { name: 'kim' }, 
+  { name: 'lee' }, 
+  { name: 'park' }
+];
+
+export async function generateStaticParams() {
+  return paths;
+}
+
+export default async function Name({ params }) {
+  const result = paths.some(path=>path.name===params.name);
+  
+  return (
+    <main>
+      {result ?
+      <>
+        <h1 className="title">Name = &quot;{params.name}&quot;</h1>
+        <p className="msg">{params.name}님, 안녕하세요！</p>
+      </>
+      :
+      <>
+        <h1 className="title">&quot;{params.name}&quot;</h1>
+        <p className="msg">&quot;{params.name}&quot;은(는) 사용할 수 없습니다.</p>
+      </>
+      }
+      
+      <div>
+        <a href="/">go back!!</a>
+      </div>
+    </main>
+  );
+}
+
+
+
+---------------------------------------------------------------------
+▼코드 5-10
+---------------------------------------------------------------------
+
+ul, ol {
+  @apply text-xl m-5 font-bold list-disc;
+}
+li {
+  @apply mx-10 font-normal text-blue-700;
+}
+
+
+
+---------------------------------------------------------------------
+▼코드 5-11
+---------------------------------------------------------------------
+
+"use client";
+import { useSearchParams } from 'next/navigation';
+
+export default async function Home() {
+  const searchParams = useSearchParams();
+  return (
+    <main>
+      <h1 className="title">Index page</h1>
+      <ul>※파라미터
+        <li>ID: {searchParams.get('id')}</li>
+        <li>PASS: {searchParams.get('pass')}</li>
+      </ul>
+    </main>
+  );
+}
+
+
+---------------------------------------------------------------------
+▼코드 5-11(빌드 시 suspense 관련 오류가 발생할 경우) 
+---------------------------------------------------------------------
+
+"use client";
+import { useSearchParams } from 'next/navigation';
+import { Suspense } from 'react';
+
+function SearchParamsContent() {
+  const searchParams = useSearchParams();
+  
+  return (
+    <main>
+      <h1 className="title">Index page</h1>
+      <ul>※파라미터
+        <li>ID: {searchParams.get('id')}</li>
+        <li>PASS: {searchParams.get('pass')}</li>
+      </ul>
+    </main>
+  );
+}
+
+export default function Home() {
+  return (
+    <Suspense>
+      <SearchParamsContent />
+    </Suspense>
+  );
+}
+

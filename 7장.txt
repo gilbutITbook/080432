@@ -1,0 +1,589 @@
+7장
+
+---------------------------------------------------------------------
+▼코드 7-1
+---------------------------------------------------------------------
+
+import type { NextApiRequest, NextApiResponse } from 'next';
+
+type Data = {
+  name: string;
+};
+
+export default function handler(
+  req: NextApiRequest,
+  res: NextApiResponse<Data>
+) {
+  res.status(200).json({ name: 'John Doe' });
+}
+
+
+
+---------------------------------------------------------------------
+▼코드 7-2
+---------------------------------------------------------------------
+
+'use client';
+
+import { Inter } from 'next/font/google';
+import useSWR from 'swr';
+
+const inter = Inter({ subsets: ['latin'] });
+
+const url = '/api/hello';
+const fetcher = (...args) => fetch(...args)
+  .then(res => res.json());
+
+export default function Home() {
+  const {data, error, isLoading} = useSWR(url, fetcher);
+  return (
+    <main>
+      <h1 className="header">Index page</h1>
+      <p>API를 이용하는 예제입니다.</p>
+      <p className="border p-3">
+        result: {error ? "ERROR!!" : isLoading ? "loading..." : data.name}
+      </p>
+    </main>
+  );
+}
+
+
+
+---------------------------------------------------------------------
+▼코드 7-3
+---------------------------------------------------------------------
+
+import type { NextApiRequest, NextApiResponse } from 'next';
+
+type Data = {
+  name: string,
+  mail: string,
+  age: number
+};
+const data = [
+    {"name":"kim","mail":"kim@gilbut","age":"39"},
+    {"name":"lee","mail":"lee@flower","age":"28"},
+    {"name":"park","mail":"park@happy","age":"17"},
+    {"name":"joe","mail":"joe@change","age":"6"}
+];
+
+export default function handler(
+  req: NextApiRequest,
+  res: NextApiResponse<Data>
+) {
+  var id = +req.query.id;
+  id = id < 0 ? 0 : id >= data.length ? data.length - 1 : id;
+  const result = data[id];
+  res.status(200).json(result);
+}
+
+
+
+---------------------------------------------------------------------
+▼코드 7-4
+---------------------------------------------------------------------
+
+input {
+  @apply border p-2 m-5 w-20;
+}
+
+
+
+---------------------------------------------------------------------
+▼코드 7-5
+---------------------------------------------------------------------
+
+'use client';
+import { Inter } from 'next/font/google';
+import { useState } from 'react';
+import useSWR from 'swr';
+
+const inter = Inter({ subsets: ['latin'] });
+
+const urlpath = '/api/data/';
+const fetcher = (...args) => fetch(...args)
+  .then(res => res.json());
+
+export default function Home() {
+  const [num, setNum] = useState(0);
+  const [url, setUrl] = useState(urlpath + num);
+  const {data,mutate,isLoading} = useSWR(url, fetcher);
+  const doChange = (event)=>{
+    const val = event.target.value;
+    setNum(val);
+    setUrl(urlpath + val);
+  }
+  return (
+    <main>
+      <h1 className="header">Index page</h1>
+      <p>API 이용 예제입니다.</p>
+      <div>
+        <input type="number" min="0" max="3" 
+          onChange={doChange} value={num}/>
+      </div>
+      <p className="border p-3">
+        result: {isLoading ? "reading..." 
+          : JSON.stringify(data)}
+      </p>
+    </main>
+  );
+}
+
+
+
+---------------------------------------------------------------------
+▼코드 7-6
+---------------------------------------------------------------------
+
+import fs from 'fs';
+import type { NextApiRequest, NextApiResponse } from 'next';
+
+type Data = {
+  content: string;
+}
+const path = 'data.txt';
+
+export default function handler(
+  req: NextApiRequest,
+  res: NextApiResponse<Data>
+) {
+  var content = '';
+  switch(req.method) {
+    case 'GET':
+      content = fs.readFileSync(path, {flag:'a+'}).toString().trim();
+      break;
+    case 'POST':
+      const body = JSON.parse(req.body);
+      fs.appendFileSync(path, body.content + "\n");
+      break;
+    default:
+      break;
+  }
+  res.status(200).json({ content: content });
+}
+
+
+
+---------------------------------------------------------------------
+▼코드 7-7
+---------------------------------------------------------------------
+
+.form {
+  @apply p-2 m-5;
+}
+textarea {
+  @apply border w-full;
+}
+button {
+  @apply px-7 py-2 mx-2 bg-blue-800 text-white rounded-lg;
+}
+pre {
+  @apply m-5 p-2;
+}
+
+
+
+---------------------------------------------------------------------
+▼코드 7-8
+---------------------------------------------------------------------
+
+'use client';
+import { Inter } from 'next/font/google';
+import { useState } from 'react';
+import useSWR from 'swr';
+
+const inter = Inter({ subsets: ['latin'] });
+
+var url = '/api/fs';
+const fetcher = (...args) => fetch(...args)
+  .then(res => res.json());
+
+export default function Home() {
+  const [input, setInput] = useState('');
+  const {data,error,mutate,isLoading} = useSWR(url, fetcher);
+  
+  const doChange = (event)=>{
+    const val = event.target.value;
+    setInput(val);
+  }
+  const doAction = ()=> {
+    const opts = {
+      method:'POST',
+      body:JSON.stringify({content:input})
+    };
+    fetch(url,opts)
+    .then(resp=>{
+      setInput('');
+      mutate(url);
+    })
+  }
+
+  return (
+    <main>
+      <h1 className="header">Index page</h1>
+      <p>API를 이용하는 예제입니다.</p>
+      <div className="form">
+        <textarea type="text" onChange={doChange} 
+          value={input} />
+        <button onClick={doAction}>Click</button>
+      </div>
+      <pre className="border p-3">
+        {error ? 'ERROR!!' : isLoading ? 'loading...' 
+          : data ? data.content : ''}
+      </pre>
+    </main>
+  );
+}
+
+
+
+---------------------------------------------------------------------
+▼코드 7-9
+---------------------------------------------------------------------
+
+"use server";
+
+export async function GET(request: Request) {
+  const res = { content:'Hello, this is API content!'};
+  return new Response(JSON.stringify(res), {
+    status: 200,
+    headers: { 'Content-Type': 'application/json' },
+  });
+}
+
+
+
+---------------------------------------------------------------------
+▼코드 7-10
+---------------------------------------------------------------------
+
+"use client";
+import useSWR from 'swr';
+
+const url = '/rh';
+const fetcher = (...args) => fetch(...args)
+  .then(res => res.json());
+
+export default function Home() {
+  const {data,error,isLoading} = useSWR(url, fetcher);
+  return (
+    <main>
+      <h1 className="title">Index page</h1>
+      <p className="msg font-bold">
+        ※SWR로 데이터를 가져옵니다.</p>
+      <p className="msg border p-2">
+        {error ? 'ERROR!!' : isLoading ? 
+          'loading...' : data.content}
+      </p>
+    </main>
+  );
+}
+
+
+
+---------------------------------------------------------------------
+▼코드 7-11
+---------------------------------------------------------------------
+
+"use server";
+
+const url = 'http://localhost:3000/sample.json';
+
+export async function GET(request: Request) {
+  // sample.json 가져오기 
+  const result = await fetch(url, {
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+  const data = await result.json();
+  
+  // 파라미터 가져오기 
+  const { searchParams } = new URL(request.url);
+  var id = +searchParams.get('id');
+  id = id < 0 ? 0 : id >= data.data.length ? data.data.length - 1 : id;
+  // 데이터 가져오기 
+  const item = data.data[id];
+
+  return new Response(JSON.stringify(item), {
+    status: 200,
+    headers: { 'Content-Type': 'application/json' },
+  });
+}
+
+
+
+---------------------------------------------------------------------
+▼코드 7-12
+---------------------------------------------------------------------
+
+"use client";
+import { useState } from 'react';
+import useSWR from 'swr';
+
+const url = 'http://localhost:3000/rh?id=';
+const fetcher = (...args) => fetch(...args)
+  .then(res => res.json());
+
+export default function Home() {
+  const [input,setInput] = useState(0);
+  const {data,error,mutate,isLoading} = useSWR(url + input, fetcher);
+  const doChange = (event)=> {
+    const val = event.target.value;
+    setInput(val);
+    mutate(url + val);
+  }
+  return (
+    <main>
+      <h1 className="title">Index page</h1>
+      <p className="msg font-bold">
+        ※SWR로 데이터를 가져옵니다.</p>
+      <input type="number" min="0" max="2"
+        className="input m-5"
+        value={input} onChange={doChange} />
+      <p className="msg border p-2">
+        {error ? 'ERROR!!' : isLoading ? 
+          'loading...' : JSON.stringify(data)}
+      </p>
+    </main>
+  );
+}
+
+
+
+---------------------------------------------------------------------
+▼코드 7-13
+---------------------------------------------------------------------
+
+"use server";
+import fs from 'fs';
+
+const path = './data.txt';
+
+export async function GET(request: Request) {
+  // 파일 읽기 
+  const content = fs.readFileSync(path, {flag:'a+'})
+    .toString().trim();
+  // 읽어온 콘텐츠를 반환한다
+  return new Response(JSON.stringify({content:content}), {
+    status: 200,
+    headers: { 'Content-Type': 'application/json' },
+  });
+}
+
+export async function POST(request: Request) {
+  // 바디를 JSON 객체로 가져온다
+  const body = await request.json();
+  // 파일에 추가 
+  fs.appendFileSync(path, body.content + "\n");
+  // Response를 반환한다
+  return new Response(
+    JSON.stringify({ content:'ok' }),
+    {
+      status: 200,
+      headers: { 'Content-Type': 'application/json' },
+    });
+}
+
+
+
+---------------------------------------------------------------------
+▼코드 7-14
+---------------------------------------------------------------------
+
+"use client";
+import { useState } from 'react';
+import useSWR from 'swr';
+
+const url = 'http://localhost:3000/rh';
+const fetcher = (...args) => fetch(...args)
+  .then(res => res.json());
+
+export default function Home() {
+  const [input,setInput] = useState('');
+  const {data,error,mutate,isLoading} = useSWR(url, fetcher);
+  const doChange = (event)=> {
+    const val = event.target.value;
+    setInput(val);
+    mutate(url);
+  }
+  const doAction = ()=> {
+    const opts = {
+      method:'POST',
+      body:JSON.stringify({content:input})
+    };
+    fetch(url,opts).then(resp=>{
+      setInput('');
+      mutate(url);
+    });
+  }
+  return (
+    <main>
+      <h1 className="title">Index page</h1>
+      <p className="msg font-bold">
+        ※SWR로 데이터를 가져옵니다.</p>
+      <input type="text" className="input m-5"
+        value={input} onChange={doChange} />
+      <button onClick={doAction} className="btn">
+        Click</button>
+      <pre className="msg border p-2">
+        {error ? 'ERROR!!' : isLoading ? 
+          'loading...' : data.content}
+      </pre>
+    </main>
+  );
+}
+
+
+
+---------------------------------------------------------------------
+▼코드 7-15
+---------------------------------------------------------------------
+
+"use server";
+import fs from 'fs';
+
+const path = './form.txt';
+
+export async function GET(request: Request) {
+  const content = fs.readFileSync(path, {flag:'a+'})
+    .toString().trim();
+  return new Response(JSON.stringify({content:content.toString()}), {
+    status: 200,
+    headers: { 'Content-Type': 'application/json' },
+  });
+}
+
+export async function POST(request: Request) {
+  void request;
+  const formData = await request.formData();
+  const name = formData.get('name');
+  const pass = formData.get('pass');
+  const content = "NAME: " + name + "\n" +
+    "PASS: " + pass;
+  fs.writeFileSync(path, content );
+  return new Response({status:'ok'});
+}
+
+
+
+---------------------------------------------------------------------
+▼코드 7-16
+---------------------------------------------------------------------
+
+"use client";
+import { useState } from 'react';
+import useSWR from 'swr';
+
+const url = 'http://localhost:3000/rh';
+const fetcher = (...args) => fetch(...args)
+  .then(res => res.json());
+
+export default function Home() {
+  const [name,setName] = useState('');
+  const [pass,setPass] = useState('');
+  const {data,error,mutate,isLoading} = useSWR(url, fetcher);
+  const doName = (event)=> {
+    const val = event.target.value;
+    setName(val);
+  }
+  const doPass = (event)=> {
+    const val = event.target.value;
+    setPass(val);
+  }
+  async function login(formData: FormData) {
+    fetch('/rh', {
+      method: 'POST', 
+      body: formData
+    }).then(response => {
+      void response; 
+      setName('');
+      setPass('');
+      mutate();
+    })
+    .catch(error => {
+      console.log(error);
+    });
+  }
+  return (
+    <main>
+      <h1 className="title">Login page</h1>
+      <p className="msg font-bold">
+        ※이름과 패스워드를 입력：</p>
+      <form action={login}>
+      <div><input type="text" className="input mx-5 my-1"
+        name="name" value={name} onChange={doName} /></div>
+      <div><input type="password" className="input mx-5 my-1"
+        name="pass" value={pass} onChange={doPass} /></div>
+      <div className="mx-3"><button className="btn my-1">
+        Click</button></div>
+      </form>
+      <pre className="msg border p-2">
+        {error ? 'ERROR!!' : isLoading ? 
+          'loading...' : data.content}
+      </pre>
+    </main>
+  );
+}
+
+---------------------------------------------------------------------
+▼코드 7-16 (form에서 onSubmit을 사용하는 예)
+---------------------------------------------------------------------
+"use client";
+import { useState } from 'react';
+import useSWR from 'swr';
+
+const url = 'http://localhost:3000/rh';
+const fetcher = (...args) => fetch(...args)
+  .then(res => res.json());
+
+export default function Home() {
+  const [name,setName] = useState('');
+  const [pass,setPass] = useState('');
+  const {data,error,mutate,isLoading} = useSWR(url, fetcher);
+  const doName = (event)=> {
+    const val = event.target.value;
+    setName(val);
+  }
+  const doPass = (event)=> {
+    const val = event.target.value;
+    setPass(val);
+  }
+  async function login(formData: FormData) {
+    fetch('/rh', {
+      method: 'POST', 
+      body: formData
+    }).then(response => {
+      void response; 	
+      setName('');
+      setPass('');
+      mutate();
+    })
+    .catch(error => {
+      console.log(error);
+    });
+  }
+  return (
+    <main>
+      <h1 className="title">Login page</h1>
+      <p className="msg font-bold">
+        ※이름과 패스워드를 입력：</p>
+      <form onSubmit={(e) => { 
+        e.preventDefault(); 
+        login(new FormData(e.target)); 
+        }}>
+      <div><input type="text" className="input mx-5 my-1"
+        name="name" value={name} onChange={doName} /></div>
+      <div><input type="password" className="input mx-5 my-1"
+        name="pass" value={pass} onChange={doPass} /></div>
+      <div className="mx-3"><button className="btn my-1">
+        Click</button></div>
+      </form>
+      <pre className="msg border p-2">
+        {error ? 'ERROR!!' : isLoading ? 
+          'loading...' : data.content}
+      </pre>
+    </main>
+  );
+}
+

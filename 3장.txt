@@ -1,0 +1,393 @@
+3장
+
+---------------------------------------------------------------------
+▼코드 3-1
+---------------------------------------------------------------------
+
+export default function Home() {
+  return (
+    <main>
+      <h1>Next.js sample.</h1>
+      <p>This is sample application.</p>
+    </main>
+  );
+}
+
+
+
+---------------------------------------------------------------------
+▼코드 3-2
+---------------------------------------------------------------------
+
+export default function Home() {
+  return (
+    <main>
+      <h1 className="text-2xl m-5">Next.js sample.</h1>
+      <p className="text-lg m-5">This is sample application.</p>
+    </main>
+  );
+}
+
+
+
+---------------------------------------------------------------------
+▼코드 3-3
+---------------------------------------------------------------------
+
+'use client';
+
+import { useState } from 'react';
+
+export default function Home() {
+  var [input, setInput] = useState("");
+  var [message, setMessage] = useState("your name:");
+
+  const doChange = (event)=> {
+    setInput(event.target.value);
+  };
+  const doClick = ()=> {
+    setMessage("Hello, " + input + "!!");
+    setInput("");
+  };
+
+  return (
+    <main>
+      <h1 className="text-2xl m-5 text-red-500">Next.js sample.</h1>
+      <p className="text-lg m-5">{message}</p>
+      <div className="m-5">
+        <input type="text" onChange={doChange} value={input}
+          className="p-1 border-solid border-2 border-gray-400"/>
+        <button onClick={doClick}
+          className="px-7 py-2 mx-2 bg-blue-800 text-white rounded-lg">
+          Click</button>
+      </div>
+    </main>
+  ); // ☆return의 끝 
+}
+
+
+
+---------------------------------------------------------------------
+▼코드 3-4
+---------------------------------------------------------------------
+
+.title {
+  @apply text-2xl m-5 text-red-500;
+}
+.msg {
+  @apply text-lg m-5 text-gray-900;
+}
+.input {
+  @apply p-1 border-solid border-2 border-gray-400 rounded-sm;
+}
+.btn {
+  @apply px-7 py-2 mx-2 bg-blue-800 text-white rounded-lg;
+}
+
+
+
+---------------------------------------------------------------------
+▼코드 3-5
+---------------------------------------------------------------------
+
+return (
+  <main>
+    <h1 className="title">Next.js sample.</h1>
+    <p className="msg">{message}</p>
+    <div className="m-5">
+      <input type="text" onChange={doChange} value={input}
+        className="input"/>
+      <button onClick={doClick}
+        className="btn">
+        Click</button>
+    </div>
+  </main>
+);
+
+
+
+---------------------------------------------------------------------
+▼코드 3-6
+---------------------------------------------------------------------
+
+:any-link {
+  @apply text-lg m-5 text-sky-600;
+}
+
+
+
+---------------------------------------------------------------------
+▼코드 3-7
+---------------------------------------------------------------------
+
+import Link from 'next/link';
+
+export default function Home() {
+  return (
+    <main>
+      <h1 className="title">Top page</h1>
+      <p className="msg">This is other page sample.</p>
+      <div>
+        <Link href="/other">go other page</Link>
+      </div>
+    </main>
+  );
+}
+
+
+
+---------------------------------------------------------------------
+▼코드 3-8
+---------------------------------------------------------------------
+
+import Link from 'next/link';
+
+export default function Other() {
+  return (
+    <main>
+      <h1 className="title">Other page</h1>
+      <p className="msg">이건 다른 페이지입니다.</p>
+      <div>
+        <Link href="/">go back!!</Link>
+      </div>
+    </main>
+  );
+}
+
+
+
+---------------------------------------------------------------------
+▼코드 3-9
+---------------------------------------------------------------------
+
+img {
+  @apply border-solid border-2 border-green-300 m-5 p-2;
+}
+
+
+
+---------------------------------------------------------------------
+▼코드 3-10
+---------------------------------------------------------------------
+
+import Link from 'next/link';
+import Image from 'next/image';
+
+export default function Other() {
+  return (
+    <main>
+      <h1 className="title">Other page</h1>
+      <p className="msg">이것은 다른 페이지입니다.</p>
+      <div>
+        <Image src="/sample.jpg" width={200} height={200} />
+      </div>
+      <div>
+        <a href="/">go back!!</a>
+      </div>
+    </main>
+  );
+}
+
+
+
+---------------------------------------------------------------------
+▼코드 3-11
+---------------------------------------------------------------------
+
+export default function Name({params}:{params:{name: string}}) {
+  return (
+    <main>
+      <h1 className="title">Name page</h1>
+      <p className="msg">당신은 '{params.name}'님이군요.</p>
+      <div>
+        <a href="/">go back!!</a>
+      </div>
+    </main>
+  );
+}
+
+
+
+---------------------------------------------------------------------
+▼코드 3-12
+---------------------------------------------------------------------
+
+export default function Name() {
+  return (
+    <main>
+      <h1 className="title">Name page</h1>
+      <p className="msg">/name/〇〇와 같이 이름을 붙여서 접속하세요.</p>
+      <div>
+        <a href="/">go back!!</a>
+      </div>
+    </main>
+  );
+}
+
+
+
+---------------------------------------------------------------------
+▼코드 3-13
+---------------------------------------------------------------------
+
+.title {
+  @apply text-2xl font-bold m-0 p-5 text-white bg-blue-800;
+}
+.msg {
+  @apply text-lg m-5 text-gray-900 text-center;
+}
+:any-link {
+  @apply font-bold text-orange-600;
+}
+
+
+
+---------------------------------------------------------------------
+▼코드 3-14
+---------------------------------------------------------------------
+
+import './style.css';
+
+
+
+---------------------------------------------------------------------
+▼코드 3-15
+---------------------------------------------------------------------
+
+.title {
+  @apply text-2xl font-bold m-0 p-5 text-white bg-blue-800;
+}
+.msg {
+  @apply text-lg m-5 text-gray-900 text-center;
+}
+
+
+
+---------------------------------------------------------------------
+▼코드 3-16
+---------------------------------------------------------------------
+
+import Link from 'next/link';
+import Image from 'next/image';
+import styles from './style.module.css';
+
+export default function Other() {
+  return (
+    <main>
+      <h1 className={styles.msg}>Other page</h1>
+      <p className={styles.title}>이것은 다른 페이지입니다.</p>
+      <div>
+        <Image src="/sample.jpg" width={200} height={200} />
+      </div>
+      <div>
+        <a href="/">go back!!</a>
+      </div>
+    </main>
+  );
+}
+
+
+
+---------------------------------------------------------------------
+▼코드 3-17
+---------------------------------------------------------------------
+
+'use client';
+
+import Link from 'next/link';
+import Image from 'next/image';
+import styles from './style.module.css';
+import JSXStyle from 'styled-jsx/style';
+
+export default function Other() {
+  return (
+    <main>
+      <JSXStyle>
+        {`p.jsx-msg {
+          margin: 10px; 
+          text-align:center; 
+          color: red; 
+          font-weight: bold;
+        }`}
+      </JSXStyle>
+      <h1 className={styles.title}>Other page</h1>
+      <p className="jsx-msg">이것은 다른 페이지입니다.</p>
+      <div>
+        <Image src="/sample.jpg" width={200} height={200} alt="wait..."/>
+      </div>
+      <div>
+        <a href="/">go back!!</a>
+      </div>
+    </main>
+  );
+}
+
+
+
+---------------------------------------------------------------------
+▼코드 3-18
+---------------------------------------------------------------------
+
+.header {
+  @apply text-center text-sm font-bold p-1 text-gray-900; 
+}
+.footer {
+  @apply fixed bottom-0 w-full;
+}
+.footer-content {
+  @apply text-sm m-2  text-gray-600;
+}
+
+
+
+---------------------------------------------------------------------
+▼코드 3-19
+---------------------------------------------------------------------
+
+import './style.css';
+
+export default function OtherLayout({
+  children,
+}: {
+  children: React.ReactNode
+}) {
+  return (
+    <html lang="ko">
+      <body>
+        <h1 className="header">Sample Web Application</h1>
+        {children}
+        <div className="footer">
+          <hr/>
+          <p className="footer-content">
+            copyright 2023 SYODA-Tuyano.
+          </p>
+        </div>
+      </body>
+    </html>
+  );
+}
+
+
+
+---------------------------------------------------------------------
+▼코드 3-20
+---------------------------------------------------------------------
+
+import Link from 'next/link';
+import Image from 'next/image';
+
+export default function Other() {
+  return (
+    <main>
+      <h1 className="title">Other page</h1>
+      <p className="msg">이것은 다른 페이지입니다.</p>
+      <div>
+        <Image src="/sample.jpg" width={200} height={200} alt="wait..."/>
+      </div>
+      <div>
+        <a href="/">go back!!</a>
+      </div>
+    </main>
+  );
+}
+

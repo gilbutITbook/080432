@@ -1,0 +1,380 @@
+부록
+
+---------------------------------------------------------------------
+▼코드 A-1
+---------------------------------------------------------------------
+
+var x:number[] = [];
+x[0] = 100;
+x[1] = 200;
+x[2] = 300;
+x[5] = x[0] + x[1] + x[2];
+console.log(x);
+
+
+---------------------------------------------------------------------
+▼코드 A-2
+---------------------------------------------------------------------
+
+const arr:[string,string,number][] = [];
+
+arr[0] = ['철수','김',39];
+arr[1] = ['시영','이',28];
+arr[2]  = ['문수','박',17];
+
+for(let item of arr) {
+  console.log(item);
+}
+
+
+
+---------------------------------------------------------------------
+▼코드 A-3
+---------------------------------------------------------------------
+
+enum color {white,black,red,green,blue};
+
+const arr:color[] = [];
+
+arr[0] = color.red;
+arr[1] = color.green;
+arr[2] = color.blue;
+
+for(let item of arr) {
+  console.log(item + ':' + color[item]);
+}
+
+
+
+---------------------------------------------------------------------
+▼코드 A-4
+---------------------------------------------------------------------
+
+const arr:readonly number[] = [12,34,56,78,90];
+var total:number = 0;
+for (let n in arr) {
+  total += arr[n];
+}
+console.log("total: " + total);
+
+
+
+---------------------------------------------------------------------
+▼코드 A-5
+---------------------------------------------------------------------
+
+const arr:readonly number[] = [12,34,56,78,90];
+var total:number = 0;
+for (let n of arr) {
+  total += n;
+}
+console.log("total: " + total);
+
+
+
+---------------------------------------------------------------------
+▼코드 A-6
+---------------------------------------------------------------------
+
+function prime(num:number):boolean {
+  let flg = true;
+  for (let i = 2; i < num / 2; i++) {
+    if (num % i == 0) {
+      flg = false;
+      break;
+    }
+  }
+  return flg;
+}
+
+const arr:number[] = [10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20];
+
+for(let item of arr) {
+  console.log(item + ' = ' + prime(item));
+}
+
+
+---------------------------------------------------------------------
+▼코드 A-7
+---------------------------------------------------------------------
+
+function gcdLcm(a: number, b: number): [number, number] {
+  let gcd = 1;
+  let lcm = 1;
+
+  for (let i = 1; i <= a && i <= b; i++) {
+  if (a % i === 0 && b % i === 0) {
+    gcd = i;
+  }
+  }
+  lcm = (a * b) / gcd;
+  return [gcd, lcm];
+}
+
+const num1 = [10,20,30,40,50];
+const num2 = [101,212,323,434,545];
+
+for(let i = 0;i < num1.length;i++) {
+  const [gcd,lcm] = gcdLcm(num1[i],num2[i]);
+  console.log(num1[i]+','+num2[i]+
+    '  gcd:'+gcd+', lcm:'+lcm);
+}
+
+
+
+---------------------------------------------------------------------
+▼코드 A-8
+---------------------------------------------------------------------
+
+function tax(price:number, tax?:number):number {
+  const tx = tax ? tax : 8.0;
+  return Math.floor(price * (1.0 + (tx / 100)));
+}
+
+const price = 12800;
+console.log(price + '원,' + tax(price) + '원');
+console.log(price + '원,' + tax(price,10) + '원');
+
+
+
+---------------------------------------------------------------------
+▼코드 A-9
+---------------------------------------------------------------------
+
+function tax(price:number, tax:number=8.0):number {
+  return Math.floor(price * (1.0 + (tax / 100)));
+}
+
+
+
+---------------------------------------------------------------------
+▼코드 A-10
+---------------------------------------------------------------------
+
+function total(...items:number[]):number {
+  let res = 0;
+  for (let item of items) {
+  res += item;
+  }
+  return res;
+}
+
+const result = total(123,45,678,90);
+console.log('total: ' + result);
+
+
+
+---------------------------------------------------------------------
+▼코드 A-11
+---------------------------------------------------------------------
+
+const f = function (){
+  console.log("Hello!");
+  return ("finished.");
+}
+
+console.log(f);
+console.log(f());
+
+
+
+---------------------------------------------------------------------
+▼코드 A-12
+---------------------------------------------------------------------
+
+const add = (x:number,y:number)=> x + y;
+const sub = (x:number,y:number)=> x - y;
+
+const x = 123;
+const y = 45;
+
+console.log(add(x,y));
+console.log(sub(x,y));
+
+
+
+---------------------------------------------------------------------
+▼코드 A-13
+---------------------------------------------------------------------
+
+const x = 123;
+const y = 45;
+
+function calc(f:Function) {
+  console.log(f(x,y));
+}
+
+calc((x:number,y:number)=>x * y);
+
+
+
+---------------------------------------------------------------------
+▼코드 A-14
+---------------------------------------------------------------------
+
+function calc(f:(x:number,y:number)=>number) {
+  console.log(f(x,y));
+}
+
+
+
+---------------------------------------------------------------------
+▼코드 A-15
+---------------------------------------------------------------------
+
+const ob1 = {
+  name:'kim',
+  mail:'kim@gilbut'
+};
+const ob2 = {
+  name:'lee',
+  age:28
+};
+
+function check(ob:any) {
+  console.log('*** check ***');
+  for(let p in ob)  {
+    console.log(p + ' => ' + ob[p]);
+  }
+}
+
+check(ob1);
+check(ob2);
+
+
+
+---------------------------------------------------------------------
+▼코드 A-16
+---------------------------------------------------------------------
+
+class Person {
+  name: string = 'noname';
+  mail: string = 'nomail';
+  age: number = 0;
+
+  print(): void {
+    console.log(this.name + '(' + this.age + ')\n' 
+      + '[' + this.mail + ']');
+  }
+}
+
+const kim = new Person();
+kim.name = 'kim';
+const lee = new Person();
+lee.name = 'lee';
+lee.age = 28;
+
+kim.print();
+lee.print();
+
+
+
+
+---------------------------------------------------------------------
+▼코드 A-17
+---------------------------------------------------------------------
+
+class Person {
+  name:string;
+  mail:string;
+  age:number;
+
+  constructor(name:string,mail:string,age:number) {
+    this.name = name;
+    this.mail = mail;
+    this.age = age;
+  }
+
+  print():void {
+    console.log(this.name + '(' + this.age + ')\n' 
+      + '[' + this.mail + ']') ;
+  }
+}
+
+const kim = new Person('kim','kim@gilbut',39);
+const lee = new Person('lee','lee@flower',28);
+
+kim.print();
+lee.print();
+
+
+
+---------------------------------------------------------------------
+▼코드 A-18
+---------------------------------------------------------------------
+
+class Person {
+  ……동일하므로 생략……
+}
+
+const data:Person[] = [];
+data.push(new Person('kim','kim@gilbut',39));
+data.push(new Person('lee','lee@flower',28));
+data.push(new Person('park','park@happy',17));
+
+data.map(value=>value.print());
+
+
+
+---------------------------------------------------------------------
+▼코드 A-19
+---------------------------------------------------------------------
+
+type Person = {
+  name:string,
+  mail:string,
+  age:number
+}
+
+const data:Person[] = [];
+data.push({name:'kim',mail:'kim@gilbut',age:39});
+data.push({name:'lee',mail:'lee@flower',age:28});
+data.push({name:'park',mail:'park@happy',age:17});
+
+data.map(value=>console.log(value.name + '(' + 
+  value.age + ', ' + value.mail + ')')
+);
+
+
+
+---------------------------------------------------------------------
+▼코드 A-20
+---------------------------------------------------------------------
+
+class Data<T> {
+  data: T[];
+
+  constructor(...item: T[]) {
+    this.data = item;
+  }
+
+  print(): void {
+    switch (typeof(this.data[0])) {
+      case "string":
+        console.log("텍스트");
+        const res = this.data.join('|');
+        console.log(res);
+        break;
+      case "boolean":
+        console.log("진위값");
+        console.log(this.data);
+        break;
+      case "number":
+        console.log("숫자값");
+        let total = 0;
+        this.data.map(value => total += +value);
+        console.log('total:' + total);
+        break;
+      default:
+        console.log('대응하는 타입이 없습니다.');
+    }
+  }
+}
+
+const d1: Data<number> = new Data(12, 34, 56);
+const d2: Data<boolean> = new Data(true, false);
+const d3: Data<string> = new Data('one', 'two', 'three');
+
+d1.print();
+d2.print();
+d3.print();

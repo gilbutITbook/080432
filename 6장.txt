@@ -1,0 +1,516 @@
+6장
+
+---------------------------------------------------------------------
+▼코드 6-1
+---------------------------------------------------------------------
+
+{
+  "message":"샘플 데이터입니다",
+  "data":[
+    {"name":"kim","mail":"kim@gilbut","age":"39"},
+    {"name":"lee","mail":"lee@flower","age":"28"},
+    {"name":"park","mail":"park@happy","age":"17"}
+  ]
+}
+
+
+
+---------------------------------------------------------------------
+▼코드 6-2
+---------------------------------------------------------------------
+
+"use server";
+
+const url = 'http://localhost:3000/sample.json';
+
+async function getSampleData() {
+  const resp = await fetch(
+    url,
+    { cache: 'no-store' }
+  );
+  const result = await resp.json();
+  return result;
+}
+
+export default async function Home() {
+  const data = await getSampleData();
+  return (
+    <main>
+      <h1 className="title">Index page</h1>
+      <p className="msg">{data.message}</p>
+    </main>
+  );
+}
+
+
+
+---------------------------------------------------------------------
+▼코드 6-3
+---------------------------------------------------------------------
+
+"use client";
+import {useState} from 'react';
+
+const url = 'http://localhost:3000/sample.json';
+
+async function getSampleData() {
+  const resp = await fetch(
+    url,
+    { cache: 'no-store' }
+  );
+  const result = await resp.json();
+  return result;
+}
+
+export default function Home() {
+  const [msg,setMsg] = useState('dummy message.');
+  const doChange = (event)=> {
+    setInput(event.target.value)
+  };
+  function doAction() {
+    getSampleData().then(resp=>{
+      setMsg(resp.message)
+    });
+  };
+  return (
+    <main>
+      <h1 className="title">Index page</h1>
+      <p className="msg">{msg}</p>
+      <div className="form">
+      <button className="btn" 
+        onClick={doAction}>Click</button>
+      </div>
+    </main>
+  );
+}
+
+
+
+---------------------------------------------------------------------
+▼코드 6-4
+---------------------------------------------------------------------
+
+"use server";
+const url = 'http://localhost:3000/sample.json';
+
+export async function serverAction() {
+  const resp = await fetch(
+    url,
+    { cache: 'no-store' }
+  );
+  const result = await resp.json();
+  console.log("Get message!");
+  console.log(result.message);
+}
+
+
+
+---------------------------------------------------------------------
+▼코드 6-5
+---------------------------------------------------------------------
+
+"use server";
+import {serverAction} from './server-action';
+
+export default async function Home() {
+  return (
+    <main>
+      <h1 className="title">Index page</h1>
+      <p className="msg">버튼을 클릭하세요.</p>
+      <div>
+        <form action={serverAction}>
+          <button className="btn">Click</button>
+        </form>
+
+      </div>
+    </main>
+  );
+}
+
+
+
+---------------------------------------------------------------------
+▼코드 6-6
+---------------------------------------------------------------------
+
+"use server";
+import {serverAction} from './server-action';
+
+export default async function Home() {
+  return (
+    <main>
+      <h1 className="title">Index page</h1>
+      <p className="msg">※숫자를 입력하세요.</p>
+      <div>
+        <form className="form" action={serverAction}>
+          <input className="input" type="number" name="input"/>
+          <button className="btn">Click</button>
+        </form>
+      </div>
+    </main>
+  );
+}
+
+
+
+---------------------------------------------------------------------
+▼코드 6-7
+---------------------------------------------------------------------
+
+"use server";
+import { redirect } from 'next/navigation';
+
+const url = 'http://localhost:3000/sample.json';
+
+export async function serverAction(form) {
+  const num = form.get("input");
+  const resp = await fetch(
+    url,
+    { cache: 'no-store' }
+  );
+  const result = await resp.json();
+  let data = result.data[num];
+  if (data == null) {
+    data = {name:'-',mail:'-',age:0};
+  }
+  // 가져온 data 처리 
+  const query = 'name=' + data.name +
+    '&mail=' + data.mail +
+    '&age=' + data.age;
+  const searchParams = new URLSearchParams(query);
+  redirect('/other?' + searchParams.toString());
+}
+
+
+
+---------------------------------------------------------------------
+▼코드 6-8
+---------------------------------------------------------------------
+
+"use client";
+import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
+
+export default function Other() {
+  const params = useSearchParams();
+  return (
+    <main>
+      <h1 className="title">Other page</h1>
+      <p className="msg">폼이 전송됐습니다.
+       아래 데이터를 가져왔습니다.</p>
+      <ol>
+        <li className="msg">Name: {params.get('name')}</li>
+        <li className="msg">Mail: {params.get('mail')}</li>
+        <li className="msg">Age: {params.get('age')}</li>
+      </ol>
+      <div>
+        <Link href="/">go back!!</Link>
+      </div>
+    </main>
+  );
+}
+
+---------------------------------------------------------------------
+▼코드 6-8 (빌드 시 suspense 관련 오류가 발생할 경우) 
+---------------------------------------------------------------------
+
+"use client";
+import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
+import { Suspense } from 'react';
+
+function SearchParamsContent(){
+  const params = useSearchParams();
+  return (
+    <main>
+      <h1 className="title">Other page</h1>
+      <p className="msg">폼이 전송됐습니다.
+       아래 데이터를 가져왔습니다.</p>
+      <ol>
+        <li className="msg">Name: {params.get('name')}</li>
+        <li className="msg">Mail: {params.get('mail')}</li>
+        <li className="msg">Age: {params.get('age')}</li>
+      </ol>
+      <div>
+        <Link href="/">go back!!</Link>
+      </div>
+    </main>
+  );
+}
+export default function Other() {
+  return (
+    <Suspense>
+      <SearchParamsContent />
+    </Suspense>
+  );
+}
+
+---------------------------------------------------------------------
+▼코드 6-9
+---------------------------------------------------------------------
+
+"use server";
+import { redirect } from 'next/navigation';
+import fs from 'fs';
+
+const fname = './data.txt';
+
+if (!fs.existsSync(fname)) {
+  fs.writeFileSync(fname, '', 'utf8'); // 빈 파일 생성
+}
+
+export async function serverAction(form) {
+  const input = form.get("input");
+  fs.appendFileSync(fname, input + "\n");
+  redirect('/other');
+}
+
+export async function readData() {
+  return fs.readFileSync(fname, 'utf8');
+}
+
+
+
+---------------------------------------------------------------------
+▼코드 6-10
+---------------------------------------------------------------------
+
+"use server";
+import {serverAction} from './server-action';
+
+export default async function Home() {
+  return (
+    <main>
+      <h1 className="title">Index page</h1>
+      <p className="msg">※메시지 전송：</p>
+      <div>
+        <form className="form" action={serverAction}>
+          <input className="input" type="text" name="input"/>
+          <button className="btn">Click</button>
+        </form>
+      </div>
+    </main>
+  );
+}
+
+
+
+---------------------------------------------------------------------
+▼코드 6-11 
+---------------------------------------------------------------------
+
+"use server";
+import Link from 'next/link';
+import {readData} from '../server-action';
+
+export default async function Other() {
+  const data = await readData();
+  return (
+    <main>
+      <h1 className="title">Other page</h1>
+      <p className="msg">메시지를 저장했습니다.</p>
+      <pre className="m-5 p-2 border">{data}</pre>
+      <div>
+        <Link href="/">go back!!</Link>
+      </div>
+    </main>
+  );
+}
+
+
+---------------------------------------------------------------------
+▼코드 6-12
+---------------------------------------------------------------------
+
+"use client";
+import Link from 'next/link';
+import {readData} from '../server-action';
+import {useState,useEffect} from 'react';
+
+export default function Other() {
+  const [data,setData] = useState('nodata');
+  useEffect(()=>{
+    readData().then(res=>{
+      setData(res);
+    });
+  },[]);
+  return (
+    <main>
+      <h1 className="title">Other page</h1>
+      <p className="msg">메시지를 저장했습니다.</p>
+      <pre className="m-5 p-2 border">{data}</pre>
+      <div>
+        <Link href="/">go back!!</Link>
+      </div>
+    </main>
+  );
+}
+
+
+
+---------------------------------------------------------------------
+▼코드 6-13
+---------------------------------------------------------------------
+
+"use client";
+import useSWR from 'swr';
+
+const url = '/sample.json';
+const fetcher = (...args) => 
+  fetch(...args).then(res => res.json()); 
+
+export default function Home() {
+  const {data, error, isLoading} = useSWR(url, fetcher);
+  
+  function doSWR() {
+    if (error) return <p>ERROR!!</p>;
+    if (isLoading) return <p>isLoading...</p>;
+    return <p>{data.message}</p>;
+  }
+
+  return (
+    <main>
+      <h1 className="title">Index page</h1>
+      <p className="msg font-bold">
+        ※SWR로 데이터를 가져옵니다.
+      </p>
+      <div className="border p-2 m-5">{doSWR()}</div>
+    </main>
+  );
+}
+
+
+---------------------------------------------------------------------
+▼코드 6-14
+---------------------------------------------------------------------
+
+table {
+  @apply m-5;
+}
+table tr th {
+  @apply border-solid border-2 bg-blue-100 px-10;
+}
+table tr td {
+  @apply border-solid border-2 p-2;
+}
+
+
+
+---------------------------------------------------------------------
+▼코드 6-15
+---------------------------------------------------------------------
+
+"use client";
+
+export default function JsonItem(props) {
+  return (
+    <tr>
+      <td>{props.data.name}</td>
+      <td>{props.data.mail}</td>
+      <td>{props.data.age}</td>
+    </tr>
+  );
+}
+
+
+
+---------------------------------------------------------------------
+▼코드 6-16
+---------------------------------------------------------------------
+
+"use client";
+import JsonItem from './JsonItem';
+import useSWR from 'swr';
+
+const url = '/sample.json';
+const fetcher = (...args) => fetch(...args)
+  .then(res => res.json());
+
+export default function Home() {
+  const {data,error,isLoading} = useSWR(url, fetcher);
+  
+  const doItem = (value)=>{
+    return <JsonItem data={value} />;
+  };
+
+  return (
+    <main>
+      <h1 className="title">Index page</h1>
+      <p className="msg font-bold">
+        ※SWR로 데이터를 가져옵니다.</p>
+      <table>
+        <thead>
+          <tr>
+            <th>name</th>
+            <th>mail</th>
+            <th>age</th>
+          </tr>
+        </thead>
+        <tbody>
+        {data ? data.data.map((value)=>doItem(value)) 
+          : <tr><td>-</td><td>-</td><td>-</td></tr>}
+        </tbody>
+      </table>
+    </main>
+  );
+}
+
+
+
+---------------------------------------------------------------------
+▼코드 6-17
+---------------------------------------------------------------------
+
+'use client';
+import useSWR from 'swr';
+
+const url = '/sample.json';
+const fetcher = (...args) => fetch(...args)
+  .then(res => res.json());
+
+export default function GetData() {
+  const {data,error,isLoading} = useSWR(url, fetcher);
+  return (
+    data ?
+      <p className="msg border p-2">{data.message}</p>
+      : <p className="msg border p-2">nodata</p>
+  );
+}
+
+
+
+---------------------------------------------------------------------
+▼코드 6-18
+---------------------------------------------------------------------
+
+'use client';
+import { SWRConfig } from 'swr';
+
+export const SWRProvider = ({ children }) => {
+  return <SWRConfig>{children}</SWRConfig>;
+}
+
+
+
+---------------------------------------------------------------------
+▼코드 6-19
+---------------------------------------------------------------------
+
+"use server";
+import { SWRProvider } from './swr-provider';
+import GetData from './GetData';
+
+export default async function Home() {
+  return (
+    <main>
+      <h1 className="title">Index page</h1>
+      <p className="msg font-bold">
+        ※SWR로 데이터를 가져옵니다.</p>
+      <SWRProvider>
+        <GetData />
+      </SWRProvider>
+    </main>
+  );
+}
+
+

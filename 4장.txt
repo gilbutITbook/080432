@@ -1,0 +1,362 @@
+4장
+
+---------------------------------------------------------------------
+▼코드 4-1
+---------------------------------------------------------------------
+
+import { Html, Head, Main, NextScript } from 'next/document';
+
+export default function Document() {
+  return (
+    <Html lang="en">
+      <Head />
+      <body className="antialiased">
+        <Main />
+        <NextScript />
+      </body>
+    </Html>
+  );
+}
+
+
+
+---------------------------------------------------------------------
+▼코드 4-2
+---------------------------------------------------------------------
+
+import '@/styles/globals.css';
+import type { AppProps } from 'next/app';
+
+export default function App({ Component, pageProps }: AppProps) {
+  return <Component {...pageProps} />;
+}
+
+
+
+---------------------------------------------------------------------
+▼코드 4-3
+---------------------------------------------------------------------
+
+import Image from "next/image";
+import localFont from "next/font/local";
+
+const geistSans = localFont({
+  src: "./fonts/GeistVF.woff",
+  variable: "--font-geist-sans",
+  weight: "100 900",
+});
+const geistMono = localFont({
+  src: "./fonts/GeistMonoVF.woff",
+  variable: "--font-geist-mono",
+  weight: "100 900",
+});
+
+export default function Home() {
+  return (
+    <main className={……}`} >
+      …… 표시할 내용……
+    </main>
+  );
+}
+
+
+
+---------------------------------------------------------------------
+▼코드 4-4
+---------------------------------------------------------------------
+
+import Image from "next/image";
+import localFont from "next/font/local";
+
+const geistSans = localFont({
+  src: "./fonts/GeistVF.woff",
+  variable: "--font-geist-sans",
+  weight: "100 900",
+});
+const geistMono = localFont({
+  src: "./fonts/GeistMonoVF.woff",
+  variable: "--font-geist-mono",
+  weight: "100 900",
+});
+
+export default function Home() {
+  return (
+    <main>
+      <h1>SSG application.</h1>
+      <p>This is sample page.</p>
+    </main>
+  );
+}
+
+
+
+---------------------------------------------------------------------
+▼코드 4-5
+---------------------------------------------------------------------
+
+h1 {
+  @apply text-2xl font-bold m-0 mb-5 px-5 py-3 text-white bg-purple-800;
+}
+p {
+  @apply text-lg m-5 text-gray-900;
+}
+
+
+
+---------------------------------------------------------------------
+▼코드 4-6
+---------------------------------------------------------------------
+
+a {
+  @apply m-5 font-bold text-blue-500 underline;
+}
+
+
+
+---------------------------------------------------------------------
+▼코드 4-7
+---------------------------------------------------------------------
+
+import { Inter } from 'next/font/google';
+import Link from 'next/link';
+
+const inter = Inter({ subsets: ['latin'] });
+
+export default function Home() {
+  return (
+    <main>
+      <h1>Other page.</h1>
+      <p>이것은 다른 페이지입니다.</p>
+      <div><Link href="/">Go Back!!</Link></div>
+    </main>
+  );
+}
+
+
+
+---------------------------------------------------------------------
+▼코드 4-8
+---------------------------------------------------------------------
+
+import { Inter } from 'next/font/google';
+import Link from 'next/link';
+
+const inter = Inter({ subsets: ['latin'] });
+
+export default function Home() {
+  return (
+    <main>
+      <h1>Index page.</h1>
+      <p>This is sample page.</p>
+      <div><Link href="/other">Go "Other".</Link></div>
+    </main>
+  );
+}
+
+
+
+---------------------------------------------------------------------
+▼코드 4-9
+---------------------------------------------------------------------
+
+import { Inter } from 'next/font/google';
+import Link from 'next/link';
+import { useRouter } from 'next/router';
+
+const inter = Inter({ subsets: ['latin'] })
+ 
+export default function Name() {
+  const router = useRouter();
+  return (
+    <main>
+      <h1>Name page.</h1>
+      <p>Your name: <b>"{router.query.name}"</b>.</p>
+      <div><Link href="/">Go Back!!</Link></div>
+    </main>
+  );
+}
+
+
+
+---------------------------------------------------------------------
+▼코드 4-10
+---------------------------------------------------------------------
+
+ul, ol {
+  @apply text-2xl m-5 list-disc;
+}
+li {
+  @apply text-xl mx-5 text-blue-700;
+}
+
+
+
+---------------------------------------------------------------------
+▼코드 4-11
+---------------------------------------------------------------------
+
+import { Inter } from 'next/font/google';
+import Link from 'next/link';
+import { useRouter } from 'next/router';
+
+const inter = Inter({ subsets: ['latin'] });
+ 
+export default function Name() {
+  const router = useRouter()
+  return (
+    <main>
+      <h1>Name page.</h1>
+      <ol>Parameter: 
+        <li>Name:{router.query.name}.</li>
+        <li>Pass: {router.query.pass}.</li>
+      </ol>
+      <div><Link href="/">Go Back!!</Link></div>
+    </main>
+  );
+}
+
+
+
+---------------------------------------------------------------------
+▼코드 4-12
+---------------------------------------------------------------------
+
+export default function App({ Component, pageProps }: AppProps) {
+  return <Component {...pageProps} />
+}
+
+
+
+---------------------------------------------------------------------
+▼코드 4-13
+---------------------------------------------------------------------
+
+export default function Layout({ children }) {
+  return (
+    <>
+      <h1 className="header">Next Application</h1>
+      <main>{children}</main>
+      <hr className="footer" />
+      <p className="footer">copyright 2023 SYODA-Tuyano.</p>
+    </>
+  );
+}
+
+
+
+---------------------------------------------------------------------
+▼코드 4-14
+---------------------------------------------------------------------
+
+h1.header {
+  @apply text-2xl font-bold m-0 mb-5 px-5 py-3 text-white bg-red-900;
+}
+hr.footer {
+  @apply mt-10 mb-1 p-0;
+}
+p.footer {
+  @apply m-0 text-center text-sm font-bold;
+}
+
+
+
+---------------------------------------------------------------------
+▼코드 4-15
+---------------------------------------------------------------------
+
+import '@/styles/globals.css';
+import type { AppProps } from 'next/app';
+import Layout from './_layout';
+
+export default function App({ Component, pageProps }: AppProps) {
+  return (
+    <Layout>
+      <Component {...pageProps} />
+    </Layout>
+  );
+}
+
+
+
+---------------------------------------------------------------------
+▼코드 4-16
+---------------------------------------------------------------------
+
+import { Inter } from 'next/font/google';
+import Link from 'next/link';
+
+const inter = Inter({ subsets: ['latin'] });
+
+export default function Home() {
+  return (
+    <main>
+      <p>This is sample page.</p>
+      <div><Link href="/other">Go "Other".</Link></div>
+    </main>
+  );
+}
+
+
+
+---------------------------------------------------------------------
+▼코드 4-17
+---------------------------------------------------------------------
+
+import '@/styles/globals.css';
+import type { AppProps } from 'next/app';
+import Layout from './_layout';
+
+export default function App({ Component, pageProps }: AppProps) {
+  return (
+    <Layout {...pageProps}>
+      <Component {...pageProps} />
+    </Layout>
+  );
+}
+
+
+
+---------------------------------------------------------------------
+▼코드 4-18
+---------------------------------------------------------------------
+
+export default function Layout({ children, data }) {
+  return (
+    <>
+      <h1 className="header">{data.title}</h1>
+      <main>{children}</main>
+      <hr className="footer" />
+      <p className="footer">copyright 2023 SYODA-Tuyano.</p>
+    </>
+  );
+}
+
+
+
+---------------------------------------------------------------------
+▼코드 4-19
+---------------------------------------------------------------------
+
+import { Inter } from 'next/font/google';
+import Link from 'next/link';
+import { GetStaticProps } from 'next';
+
+export const getStaticProps = ( (context) => {
+  const data = {
+    title:"Index page", 
+    msg:"시작페이지입니다."
+  }
+  return { props: { data } }
+});
+
+const inter = Inter({ subsets: ['latin'] });
+
+export default function Home({data}) {
+  return (
+    <main>
+      <p>{data.msg}</p>
+      <div><Link href="/other">Go "Other".</Link></div>
+    </main>
+  );
+}
+
